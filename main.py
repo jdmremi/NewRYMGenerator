@@ -63,7 +63,7 @@ class SpotifyAuthManager:
         Returns:
             str: The ID of the created playlist.
         """
-        created_playlist = self.spotify.user_playlist_create(
+        created_playlist: any = self.spotify.user_playlist_create(
             user=USER_ID, name=title, description=description)
         return created_playlist["id"]
 
@@ -199,7 +199,7 @@ class RYMParser:
             pages_path (str, optional): The file path to the pages directory. Defaults to "./pages/".
         """
         self.pages_path: str = pages_path
-        self.spotify = spotify_manager
+        self.spotify: SpotifyAuthManager = spotify_manager
 
     def get_entries(self) -> list:
         """
@@ -248,7 +248,7 @@ class RYMParser:
         results = []
 
         with open(page_path, "r") as file:
-            file_content = file.read()
+            file_content: str = file.read()
             soup: BeautifulSoup = BeautifulSoup(file_content, "html.parser")
             list_items: ResultSet[any] = soup.find_all(
                 "td", class_="main_entry")
@@ -330,19 +330,12 @@ class Utils:
         Returns:
             list[list]: A list of lists, where each sublist is a chunk of the original list.
         """
-        list_splitted = [l[x:x+n] for x in range(0, len(l), n)]
+        list_splitted: list[list] = [l[x:x+n] for x in range(0, len(l), n)]
         return list_splitted
 
 if __name__ == "__main__":
 
-    playlist_name: str = ""
-
-    add_to_existing: str = input("Add to existing playlist? (y/n)").lower()
-
-    if add_to_existing == 'y':
-        playlist_name: str = input("Please enter the ID of the playlist you wish to add to: ")
-    else:
-        playlist_name: str = input("Please enter a name for the playlist: ")
+    playlist_name: str = input("Please enter a name for the playlist: ")
 
     spotify: SpotifyAuthManager = SpotifyAuthManager(
         client_id=CLIENT_ID, client_secret=CLIENT_SECRET, redirect_uri=REDIRECT_URI, scopes=SCOPES, user_id=USER_ID)
